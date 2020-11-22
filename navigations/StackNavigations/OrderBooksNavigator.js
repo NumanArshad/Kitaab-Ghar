@@ -7,8 +7,9 @@ import {
 
 import { Button, useTheme } from "react-native-paper";
 import Icons from "react-native-vector-icons/FontAwesome";
-import CreateEditOrderCart from "../../screens/Orders/CreateEditOrderCart";
+import BooksCart from "../../screens/Orders/BooksCart";
 import Orders from "../../screens/Orders/Orders";
+import PreviewCartItem from "../../screens/Orders/PreviewCartItem";
 const order = createStackNavigator();
 
 const OrderBooksNavigator = () => {
@@ -16,7 +17,7 @@ const OrderBooksNavigator = () => {
 
   return (
     <order.Navigator
-       initialRouteName="MyCart"
+  //   initialRouteName="MyOrders"
       screenOptions={({ navigation }) => ({
         headerLeft: (props) => (
           <Icons
@@ -32,12 +33,19 @@ const OrderBooksNavigator = () => {
         headerStyle: {
           backgroundColor: colors.primary,
         },
+
+        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
       })}
     >
       <order.Screen
-        component={CreateEditOrderCart}
+        component={BooksCart}
         name="MyCart"
-        options={{ headerTitle: "Order Cart"}}
+        options={{ headerTitle: "Order Cart" }}
+      />
+      <order.Screen
+        component={PreviewCartItem}
+        name="CartItem"
+        options={{ headerShown:false }}
       />
       <order.Screen component={Orders} name="MyOrders" />
     </order.Navigator>

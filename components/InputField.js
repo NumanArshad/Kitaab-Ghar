@@ -9,6 +9,7 @@ const InputField = ({ extendStyles, ...rest }) => {
   return (
     <TextInput
       style={extendStyles || { backgroundColor: background, maxHeight: 60 }}
+      
       {...rest}
     />
   );

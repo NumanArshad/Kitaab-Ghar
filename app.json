@@ -2,6 +2,7 @@
   "expo": {
     "name": "KitaabGhar",
     "slug": "KitaabGhar",
+    "description": "Book delivery app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/app_icon.png",
@@ -23,7 +24,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFF"
-      }
+      },
+      "package": "com.numanarshad.dev.KitaabGhar"
     },
     "web": {
       "favicon": "./assets/favicon.png"

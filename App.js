@@ -4,6 +4,7 @@ import { StyleSheet, Text, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { DefaultTheme, Provider as PaperProvider } from "react-native-paper";
 import RootNavigator from "./navigations/StackNavigations/RootNavigator";
+import Toast from 'react-native-toast-message';
 
 const theme = {
   ...DefaultTheme,
@@ -18,12 +19,14 @@ const theme = {
 
 export default function App() {
   return (
+    <>
     <PaperProvider theme={theme}>
+   
       <NavigationContainer>
         <RootNavigator />
       </NavigationContainer>
     </PaperProvider>
-
+</>
     // <View style={styles.container}>
     //   <Text>Open up App.js to start working on your app!</Text>
     //   <StatusBar style="auto" />

@@ -7,6 +7,7 @@ import {
 import AuthNavigator from "./AuthNavigator";
 import DrawerNavigator from "../DrawerNavigation/DrawerNavigator";
 import SellBooksNavigator from "./SellBooksNavigator";
+import OrderBooksNavigator from "./OrderBooksNavigator";
 
 const rootNavigator = createStackNavigator();
 

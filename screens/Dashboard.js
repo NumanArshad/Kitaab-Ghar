@@ -1,23 +1,16 @@
 import React, { useEffect, useState } from "react";
-import {
-  View,
-  FlatList,
-  Text,
-  StyleSheet,
-  ScrollView,
-  Image,
-} from "react-native";
+import { View, FlatList, Text, StyleSheet, Image } from "react-native";
 import {
   Avatar,
   Button,
   Card,
   Title,
   Paragraph,
-  useTheme,
   Surface,
 } from "react-native-paper";
 import Icons from "react-native-vector-icons/SimpleLineIcons";
 import OptionIcons from "react-native-vector-icons/Ionicons";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 const LeftContent = (props) => <Avatar.Icon {...props} icon="folder" />;
 const DATA = [
@@ -75,12 +68,14 @@ const DATA = [
   },
 ];
 
-export default function Dashboard() {
+export default function Dashboard({ navigation, route }) {
   const [isGridView, triggerGridView] = useState(true);
-
   const renderItem = ({ item, index }) =>
     isGridView ? (
-      <Card style={styles.dashboardCard}>
+      <Card
+        style={styles.dashboardCard}
+        onPress={() => navigation.navigate("CartItem")}
+      >
         <Card.Cover
           source={{ uri: "https://picsum.photos/700" }}
           style={{ height: 130 }}
@@ -109,7 +104,18 @@ export default function Dashboard() {
           style={{ width: 80, height: 100 }}
         />
         <View style={{ paddingHorizontal: 10, marginVertical: 5, flex: 1 }}>
-          <Text>Book Name 7th edition</Text>
+          <View
+            style={{ flexDirection: "row", justifyContent: "space-between" }}
+          >
+            <Text>Book Name 7th edition</Text>
+            <MaterialCommunityIcons
+              name="cart-plus"
+              onPress={() =>
+                navigation.navigate("MyCart", { screen: "CartItem" })
+              }
+              size={25}
+            />
+          </View>
           <Text>written by</Text>
           <Text>Publisher</Text>
           <View
