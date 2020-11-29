@@ -6,8 +6,13 @@ import styles from "./styles";
 import InputField from "../../components/InputField";
 import firebase from "../../utils/firebaseConfig/config";
 import { ToastRendered, success, error } from "../../utils/ToastNotification";
+import { signInUser } from "../../redux/auth/auth.actions";
+import { useDispatch, useSelector } from "react-redux";
+import { isLoading } from "../../redux/loading/loading.actions";
 
 export default function Login({ navigation }) {
+  const dispatch = useDispatch();
+  const { is_loading } = useSelector((state) => state.loading);
   const backPressHandler = () => {
     Alert.alert("Exit from Kitaab Ghar!", "Are you sure you want to exit?", [
       {
@@ -29,18 +34,10 @@ export default function Login({ navigation }) {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = async () => {
-    try {
-      const hitEndPoint = await firebase
-        .auth()
-        .signInWithEmailAndPassword(email, password);
-      if (hitEndPoint) {
-        alert("sflnfke");
-        success("SignIn sucess", "Sign In successfully!");
-      }
-    } catch (err) {
-      error("SignIn error", err.message);
-    }
+  const handleSubmit = () => {
+    //navigation.navigate("home");
+    dispatch(isLoading());
+    dispatch(signInUser(email, password, navigation));
   };
 
   useEffect(() => {
@@ -48,13 +45,6 @@ export default function Login({ navigation }) {
       "hardwareBackPress",
       backPressHandler
     );
-
-    // const { currentUser } = firebase.auth();
-    // if (currentUser) {
-    //   alert("is iuser");
-    // } else {
-    //   alert("not");
-    // }
     return () => backHandler.remove();
   }, []);
 
@@ -64,7 +54,6 @@ export default function Login({ navigation }) {
         flex: 1,
         paddingTop: "30%",
         alignItems: "center",
-
         backgroundColor: "white",
       }}
     >
@@ -93,7 +82,7 @@ export default function Login({ navigation }) {
         style={[styles.submitButton, styles.borderRadius]}
         onPress={handleSubmit}
       >
-        Login
+        {is_loading ? `...Loading` : `Login`}
       </Button>
 
       <View

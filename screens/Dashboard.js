@@ -11,6 +11,8 @@ import {
 import Icons from "react-native-vector-icons/SimpleLineIcons";
 import OptionIcons from "react-native-vector-icons/Ionicons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllBooks } from "../redux/books/books.actions";
 
 const LeftContent = (props) => <Avatar.Icon {...props} icon="folder" />;
 const DATA = [
@@ -69,6 +71,14 @@ const DATA = [
 ];
 
 export default function Dashboard({ navigation, route }) {
+  const dispatch = useDispatch();
+  const { all_books } = useSelector((state) => state.books);
+  const {is_loading} = useSelector(state => state.loading)
+
+  useEffect(() => {
+    dispatch(getAllBooks());
+  }, [dispatch]);
+
   const [isGridView, triggerGridView] = useState(true);
   const renderItem = ({ item, index }) =>
     isGridView ? (
@@ -132,7 +142,7 @@ export default function Dashboard({ navigation, route }) {
       <View
         style={{ flexDirection: "row", marginRight: 10, marginVertical: 10 }}
       >
-        <Text>Count books</Text>
+        <Text>Count books : {is_loading ? `...loading count` : all_books?.length}</Text>
         <OptionIcons
           name="ios-options"
           style={{

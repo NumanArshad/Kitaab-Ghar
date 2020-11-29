@@ -17,8 +17,8 @@ const RootNavigator = () => (
       headerShown: false,
       cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
     }}
+    initialRouteName="home"
   >
-    <rootNavigator.Screen component={AuthNavigator} name="login" />
     <rootNavigator.Screen component={DrawerNavigator} name="home" />
     <rootNavigator.Screen component={SellBooksNavigator} name="sellbooks" />
   </rootNavigator.Navigator>

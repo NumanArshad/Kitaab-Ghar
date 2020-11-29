@@ -71,12 +71,7 @@ const PreviewCartItem = ({ navigation }) => {
           />
         </LinearGradient>
       </View>
-      <Searchbar
-      placeholder="Search"
-    style={{width:"80%"}}
-      //  onChangeText={onChangeSearch}
-    //  value={searchQuery}
-    />
+ 
     
       <View style={styles.rowContainer}>
         <View style={styles.rowItem}>

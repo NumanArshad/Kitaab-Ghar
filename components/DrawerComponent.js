@@ -1,4 +1,4 @@
-import React, { useLayoutEffect } from "react";
+import React, { useEffect, useLayoutEffect } from "react";
 import { Text, Image, ImageBackground, View, StyleSheet } from "react-native";
 import {
   DrawerContentScrollView,
@@ -18,43 +18,29 @@ import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { CommonActions } from "@react-navigation/native";
+import { getCurrentUser, logout } from "../redux/auth/auth.actions";
+import { useDispatch, useSelector } from "react-redux";
 
 const CustomDrawerContent = (props) => {
   const { colors } = useTheme();
+
+  const { email } = getCurrentUser();
+
+  const {auth_role} = useSelector(state => state.auth)
+
+  useEffect(() => {
+   
+  }, []);
+
   useLayoutEffect(() => {
     if (props.state.index === 3) {
-     // alert("fenen")
       props.navigation.navigate("MyOrders", {
         screen: "MyOrders",
-         
       });
-      // props.navigation.reset({
-      //   index: 0,
-      //   routes: [
-
-      //     {
-      //       name: "MyOrders",
-      //       state: {
-      //         routes: [{ name: "MyOrders" }],
-      //       },
-      //     },
-      //   ],
-      // });
-      // props.navigation.dispatch(
-      //   CommonActions.reset({
-      //     index: 1,
-      //     routes: [
-      //       {
-      //         name: "MyOrders",
-      //         state: {
-      //           routes: [{ name: "MyOrders" }],
-      //         },
-      //       },
-      //     ],
-      //   })
-      // );
     }
   }, [props.state.index]);
+
+  const dispatch = useDispatch();
 
   return (
     <View style={{ flex: 1 }}>
@@ -122,27 +108,13 @@ const CustomDrawerContent = (props) => {
                 </Text>
               </View>
             </View>
-            {/* <ToggleButton.Row
-              onValueChange={(value) => alert(value)}
-              //value={value}
-            >
-              <ToggleButton
-                icon="format-align-left"
-                //children={(props) => <Button {...props}>nsgr</Button>}
-                value="English"
-              >
-                dgr
-              </ToggleButton>
-              <ToggleButton icon="format-align-right" value="Urdu" />
-            </ToggleButton.Row> */}
           </View>
           <View style={{ marginTop: 20 }}>
-            <Text style={{ color: "white" }}>Muhammad Numan Arshad</Text>
-            <Text style={{ color: "white" }}>numanarshad.dev@gmail.com</Text>
+            <Text style={{ color: "white" }}>Muhammad Numan Arshad {auth_role}</Text>
+            <Text style={{ color: "white" }}>{email}</Text>
           </View>
         </ImageBackground>
       </View>
-      {/* <Image source={img} style={{ width: "100%", height: 120 }} /> */}
 
       <View style={{ flex: 0.75, marginTop: -30 }}>
         <DrawerContentScrollView>
@@ -165,7 +137,7 @@ const CustomDrawerContent = (props) => {
           />
           <DrawerItem
             label="Logout"
-            onPress={() => props.navigation.navigate("sellbooks")}
+            onPress={() => logout()}
             icon={(props) => (
               <MaterialCommunityIcons name="logout" size="10px" {...props} />
             )}

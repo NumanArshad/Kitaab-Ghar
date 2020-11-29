@@ -1,10 +1,13 @@
 import { StatusBar } from "expo-status-bar";
-import React from "react";
+import React, { useEffect } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { DefaultTheme, Provider as PaperProvider } from "react-native-paper";
 import RootNavigator from "./navigations/StackNavigations/RootNavigator";
-import Toast from 'react-native-toast-message';
+import { authObserver, getCurrentUser } from "./redux/auth/auth.actions";
+import AuthNavigator from "./navigations/StackNavigations/AuthNavigator";
+import { Provider, useDispatch, useSelector } from "react-redux";
+import store from "./store";
 
 const theme = {
   ...DefaultTheme,
@@ -17,20 +20,30 @@ const theme = {
   },
 };
 
+const RootIndex = () => {
+  const { is_auth } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  console.log("state", is_auth);
+
+  useEffect(() => {
+    dispatch(authObserver());
+
+  }, [dispatch]);
+
+  return (
+    <NavigationContainer>
+      {is_auth ? <RootNavigator /> : <AuthNavigator />}
+    </NavigationContainer>
+  );
+};
+
 export default function App() {
   return (
-    <>
-    <PaperProvider theme={theme}>
-   
-      <NavigationContainer>
-        <RootNavigator />
-      </NavigationContainer>
-    </PaperProvider>
-</>
-    // <View style={styles.container}>
-    //   <Text>Open up App.js to start working on your app!</Text>
-    //   <StatusBar style="auto" />
-    // </View>
+    <Provider store={store}>
+      <PaperProvider theme={theme}>
+        <RootIndex />
+      </PaperProvider>
+    </Provider>
   );
 }
 
