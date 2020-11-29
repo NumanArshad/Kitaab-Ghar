@@ -18,17 +18,14 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.numanarshad.dev.KitaabGhar",
-      "versionCode": 1
+      "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFF"
       },
-      "package": "com.numanarshad.dev.KitaabGhar",
-      "versionCode": 1
+      "package": "com.numanarshad.dev.KitaabGhar"
     },
     "web": {
       "favicon": "./assets/favicon.png"
