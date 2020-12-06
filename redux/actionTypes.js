@@ -9,3 +9,4 @@ export const IS_SIGN_OUT = "IS_SIGN_OUT";
 export const GET_ALL_BOOKS = "GET_ALL_BOOKS";
 export const GET_SINGLE_BOOK = "GET_SINGLE_BOOK";
 export const CLEAR_BOOKS = "CLEAR_BOOKS";
+export const CLEAR_SINGLE_BOOK = "CLEAR_SINGLE_BOOK";

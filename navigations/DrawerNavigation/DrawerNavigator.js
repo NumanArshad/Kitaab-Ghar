@@ -24,6 +24,7 @@ const DrawerNavigator = () => {
   return (
     <drawer.Navigator
       drawerContent={(props) => <CustomDrawerContent {...props} />}
+      openByDefault={false}
       drawerContentOptions={{
         activeTintColor: primary,
         

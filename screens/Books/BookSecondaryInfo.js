@@ -35,7 +35,7 @@ const BookSecondaryInfo = ({ navigation, route }) => {
 
   const handleImageupload = async () => {
     
-    dispatch(isLoading())
+     dispatch(isLoading())
     const UriStringList = basicInfo.imageUri.split(".");
     const currentTimeStamp = new Date().getTime();
     const fileName = currentTimeStamp + UriStringList[UriStringList.length - 1];
@@ -53,6 +53,8 @@ const BookSecondaryInfo = ({ navigation, route }) => {
       handleSubmit(downloadUrl);
     } catch (err) {
       error("Error Image Upload", err.message);
+
+      Promise.reject(err)
     }
   };
 
@@ -62,7 +64,7 @@ const BookSecondaryInfo = ({ navigation, route }) => {
         ...basicInfo,
         imageUri: downloadUrl,
         ...formData,
-      })
+      }, navigation)
     );
   };
 

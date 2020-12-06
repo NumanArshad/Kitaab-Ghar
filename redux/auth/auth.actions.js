@@ -53,6 +53,7 @@ export const signInUser = (email, password) => async (dispatch) => {
     dispatch(getSignInUserRole(uid, "showToast"));
   } catch (err) {
     error("SignIn error", err.message);
+    Promise.reject(err)
     dispatch(hideLoading());
   }
 };
@@ -60,10 +61,10 @@ export const signInUser = (email, password) => async (dispatch) => {
 export const authObserver = () => (dispatch) => {
   authRef.onAuthStateChanged((user) => {
     if (user) {
-      console.log("now user", user.uid);
+     // console.log("now user", user.uid);
       dispatch(getSignInUserRole(user.uid));
     } else {
-      console.log("not");
+     // console.log("not");
       dispatch({
         type: IS_SIGN_OUT,
       });
@@ -73,7 +74,7 @@ export const authObserver = () => (dispatch) => {
 
 export const getCurrentUser = () => {
   const dt = authRef.currentUser;
-  console.log("usssser", dt);
+  //console.log("usssser", dt);
   return dt;
 };
 

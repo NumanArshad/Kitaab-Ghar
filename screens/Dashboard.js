@@ -1,5 +1,13 @@
-import React, { useEffect, useState } from "react";
-import { View, FlatList, Text, StyleSheet, Image } from "react-native";
+import React, { useEffect, useState , useCallback} from "react";
+import {
+  View,
+  FlatList,
+  Text,
+  StyleSheet,
+  Image,
+  ScrollView,
+  RefreshControl,
+} from "react-native";
 import {
   Avatar,
   Button,
@@ -13,6 +21,7 @@ import OptionIcons from "react-native-vector-icons/Ionicons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllBooks } from "../redux/books/books.actions";
+import { useFocusEffect } from "@react-navigation/native";
 
 const LeftContent = (props) => <Avatar.Icon {...props} icon="folder" />;
 const DATA = [
@@ -73,11 +82,18 @@ const DATA = [
 export default function Dashboard({ navigation, route }) {
   const dispatch = useDispatch();
   const { all_books } = useSelector((state) => state.books);
-  const {is_loading} = useSelector(state => state.loading)
+  const { is_loading } = useSelector((state) => state.loading);
 
   useEffect(() => {
+    console.log("yes")
     dispatch(getAllBooks());
   }, [dispatch]);
+
+//   useFocusEffect(useCallback(()=>{
+// console.log("is focused")
+
+//   },[]))
+//  console.log("length is ",all_books?.length);
 
   const [isGridView, triggerGridView] = useState(true);
   const renderItem = ({ item, index }) =>
@@ -91,7 +107,7 @@ export default function Dashboard({ navigation, route }) {
           style={{ height: 130 }}
         />
         <Card.Content>
-          <Title>Card title {index}</Title>
+          <Title>{item.bookName} {index}</Title>
           <Paragraph>Card content</Paragraph>
         </Card.Content>
         <Card.Actions>
@@ -108,41 +124,58 @@ export default function Dashboard({ navigation, route }) {
           padding: 5,
           marginRight: 10,
         }}
+        
       >
         <Image
-          source={{ uri: "https://picsum.photos/700" }}
+          source={{ uri: item.imageUri }}
           style={{ width: 80, height: 100 }}
         />
         <View style={{ paddingHorizontal: 10, marginVertical: 5, flex: 1 }}>
           <View
             style={{ flexDirection: "row", justifyContent: "space-between" }}
           >
-            <Text>Book Name 7th edition</Text>
+            <Text>{item.bookName}  {item.edition} edition
+            {item.id}
+            </Text>
             <MaterialCommunityIcons
               name="cart-plus"
               onPress={() =>
-                navigation.navigate("MyCart", { screen: "CartItem" })
+                navigation.navigate("MyCart", { screen: "CartItem" ,params: {id: item.id} })
               }
               size={25}
             />
           </View>
-          <Text>written by</Text>
-          <Text>Publisher</Text>
+            <Text>{item.author}</Text>
+            <Text>{item.publisher}</Text>
           <View
             style={{ flexDirection: "row", justifyContent: "space-between" }}
           >
-            <Text>Stock</Text>
-            <Text>Price</Text>
+            <Text>{item.stock}</Text>
+            <Text>{item.sellingPrice}</Text>
           </View>
         </View>
       </Surface>
     );
   return (
     <View style={styles.dashboadContainer}>
+      {/* <SkeletonContent
+        containerStyle={{ flex: 1, width: 300 }}
+        isLoading={true}
+        layout={[
+          { key: "someId", width: 220, height: 20, marginBottom: 6 },
+          { key: "someOtherId", width: 180, height: 20, marginBottom: 6 },
+        ]}
+      >
+        <Text style={{width:"200px"}}>Your content</Text>
+        <Text >Other content</Text>
+      </SkeletonContent> */}
+
       <View
         style={{ flexDirection: "row", marginRight: 10, marginVertical: 10 }}
       >
-        <Text>Count books : {is_loading ? `...loading count` : all_books?.length}</Text>
+        <Text>
+          Count books : {is_loading ? `...loading count` : all_books?.length}
+        </Text>
         <OptionIcons
           name="ios-options"
           style={{
@@ -161,23 +194,41 @@ export default function Dashboard({ navigation, route }) {
         />
       </View>
       {isGridView ? (
-        <FlatList
-          //horizontal={false}
-          key={"_"}
-          numColumns={2}
-          data={DATA}
-          // refreshing={false}
-          renderItem={renderItem}
-          keyExtractor={(item) => "_" + item.key}
-        />
+        is_loading ? (
+          <Text>...loading</Text>
+        ) : (
+          <FlatList
+            //horizontal={false}
+            key={"_"}
+            numColumns={2}
+            data={DATA}
+            // refreshing={false}
+            renderItem={renderItem}
+            keyExtractor={(item) => "_" + item.key}
+            refreshControl={
+              <RefreshControl
+                refreshing={is_loading}
+                onRefresh={() => dispatch(getAllBooks())}
+              />
+            }
+          />
+        )
+      ) : is_loading ? (
+        <Text>...loading</Text>
       ) : (
         <FlatList
           //horizontal={false}
           key={"#"}
-          data={DATA}
+          data={all_books}
           // refreshing={false}
           renderItem={renderItem}
-          keyExtractor={(item) => "#" + item.key}
+          keyExtractor={(item) => "#" + item.id}
+          refreshControl={
+            <RefreshControl
+              refreshing={is_loading}
+              onRefresh={() => dispatch(getAllBooks())}
+            />
+          }
         />
       )}
     </View>
