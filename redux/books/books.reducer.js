@@ -13,6 +13,7 @@ const initialState = {
 export default function (state = initialState, actions) {
   switch (actions.type) {
     case GET_ALL_BOOKS:
+     
       return { all_books: actions.payload };
     case GET_SINGLE_BOOK:
       return { ...state, single_book: actions.payload };

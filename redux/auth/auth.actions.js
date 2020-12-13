@@ -73,9 +73,9 @@ export const authObserver = () => (dispatch) => {
 };
 
 export const getCurrentUser = () => {
-  const dt = authRef.currentUser;
-  //console.log("usssser", dt);
-  return dt;
+  const {email, phoneNumber, photoURL, uid: userId} = authRef.currentUser;
+ // console.log("usssser", dt);
+  return {email, phoneNumber, photoURL, userId};
 };
 
 export const logout = async() => {

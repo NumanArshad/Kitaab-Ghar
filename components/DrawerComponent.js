@@ -118,7 +118,17 @@ const CustomDrawerContent = (props) => {
 
       <View style={{ flex: 0.75, marginTop: -30 }}>
         <DrawerContentScrollView>
-          <DrawerItemList {...props} />
+          <DrawerItemList {...props} 
+         onItemPress={({ route, focused }) => {
+          if (focused) {
+            alert("focues")
+           // navigation.closeDrawer();
+          } else {
+          //  const pushAction = StackActions.push(getRoute(...));
+          //  navigation.dispatch(pushAction);
+          }
+        }}
+         />
 
           <DrawerItem
             label="Sell Books"

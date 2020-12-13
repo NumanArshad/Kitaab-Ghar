@@ -8,6 +8,7 @@ export const success = (heading, text) => {
     type: "success",
     text1: heading,
     text2: text,
+    visibilityTime: 40000
   });
 };
 

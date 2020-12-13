@@ -1,4 +1,9 @@
-import React, { useCallback, useEffect, useLayoutEffect } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useState,
+} from "react";
 import {
   View,
   Text,
@@ -22,42 +27,75 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   clearSingleBook,
   getSingleBook,
+  updateBook,
 } from "../../redux/books/books.actions";
 import { useFocusEffect } from "@react-navigation/native";
-import SkeletonContent from "react-native-skeleton-content";
+import { getCurrentUser } from "../../redux/auth/auth.actions";
 
 const PreviewCartItem = ({ navigation, route }) => {
-  console.log(route.params.id);
-
   const {
     colors: { primary, surface },
   } = useTheme();
 
+  const { userId } = getCurrentUser();
+
+  // const { single_book } = useSelector((state) => state.books);
+
   const dispatch = useDispatch();
 
-  const { single_book } = useSelector((state) => state.books);
-
-  console.log("here", single_book);
-
-  //const {bookName, author, publisher, stock, sellingPrice, imageUri} = single_book
-
-  const { is_loading } = useSelector((state) => state.loading);
-
-  console.log(is_loading);
-  //   useEffect(()=>{
-  //     console.log("mount in previe")
-
-  // //dispatch(getSingleBook(route.params.id))
-  //   },[dispatch])
+  const {
+    bookDetail: single_book,
+  } = route.params;
+  const [wishList, setWishList] = useState(single_book?.wishListUsers || []);
 
   useFocusEffect(
     useCallback(() => {
-      console.log("focus in previe", route.params.id);
-      dispatch(getSingleBook(route.params.id));
-
-      return () => dispatch(clearSingleBook());
-    }, [dispatch, route.params.id])
+      return () => {
+        console.log("hy", single_book, wishList);
+      };
+    }, [dispatch])
   );
+
+  const isFavorite = () => {
+    return wishList.some((user) => user === userId);
+  };
+
+  const isCreatedBy = () => {
+    return single_book?.createdByUserId === userId;
+  };
+
+  const handleToggleWishList = () => {
+    let updateList = [...wishList];
+    if (isFavorite()) {
+      updateList = updateList.filter(
+        (userId) => userId !== getCurrentUser()?.userId
+      );
+    } else {
+      updateList = [...updateList, getCurrentUser()?.userId];
+    }
+    // console.log(updateList)
+    setWishList(updateList);
+
+    dispatch(
+      updateBook({
+        ...single_book,
+        wishListUsers: updateList,
+      })
+    );
+  };
+
+  const handleSubmitPreview = () => {
+    if (isCreatedBy()) {
+      navigation.navigate("sellbooks", {
+        screen: "sellbooks",
+        params: {
+          single_book: { ...single_book, wishListUsers: wishList }
+        },
+      });
+    } else {
+      navigation.navigate("MyCart");
+    }
+  };
 
   return (
     <View
@@ -66,17 +104,6 @@ const PreviewCartItem = ({ navigation, route }) => {
         flex: 1,
       }}
     >
-      <SkeletonContent
-        containerStyle={{ flex: 1, width: 300 }}
-        isLoading={true}
-        layout={[
-          { key: "someId", width: 220, height: 20, marginBottom: 6 },
-          { key: "someOtherId", width: 180, height: 20, marginBottom: 6 },
-        ]}
-      >
-        <Text>Your content</Text>
-        <Text>Other content</Text>
-      </SkeletonContent>
       <View
         style={{
           // flexDirection: "row",
@@ -134,7 +161,11 @@ const PreviewCartItem = ({ navigation, route }) => {
           <Text style={{ fontSize: 11.5 }}>Status: Available</Text>
         </View>
         <View style={styles.rowItem}>
-          <MaterialIcons name="favorite-border" size={20} />
+          <MaterialIcons
+            name={`${isFavorite() ? `favorite` : `favorite-border`}`}
+            size={20}
+            onPress={handleToggleWishList}
+          />
         </View>
       </View>
       <View style={{ padding: 10 }}>
@@ -171,8 +202,8 @@ const PreviewCartItem = ({ navigation, route }) => {
           marginBottom: 10,
         }}
       >
-        <Button mode="contained" onPress={() => navigation.navigate("MyCart")}>
-          Buy now
+        <Button mode="contained" onPress={handleSubmitPreview}>
+          {isCreatedBy() ? `Edit` : `Buy now`}
         </Button>
       </Surface>
     </View>

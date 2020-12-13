@@ -22,6 +22,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { useDispatch, useSelector } from "react-redux";
 import { getAllBooks } from "../redux/books/books.actions";
 import { useFocusEffect } from "@react-navigation/native";
+import ContentLoader from "react-native-easy-content-loader"; 
 
 const LeftContent = (props) => <Avatar.Icon {...props} icon="folder" />;
 const DATA = [
@@ -135,12 +136,11 @@ export default function Dashboard({ navigation, route }) {
             style={{ flexDirection: "row", justifyContent: "space-between" }}
           >
             <Text>{item.bookName}  {item.edition} edition
-            {item.id}
             </Text>
             <MaterialCommunityIcons
               name="cart-plus"
               onPress={() =>
-                navigation.navigate("MyCart", { screen: "CartItem" ,params: {id: item.id} })
+                navigation.navigate("MyCart", { screen: "CartItem" ,params: {bookDetail: item} })
               }
               size={25}
             />
@@ -158,22 +158,10 @@ export default function Dashboard({ navigation, route }) {
     );
   return (
     <View style={styles.dashboadContainer}>
-      {/* <SkeletonContent
-        containerStyle={{ flex: 1, width: 300 }}
-        isLoading={true}
-        layout={[
-          { key: "someId", width: 220, height: 20, marginBottom: 6 },
-          { key: "someOtherId", width: 180, height: 20, marginBottom: 6 },
-        ]}
-      >
-        <Text style={{width:"200px"}}>Your content</Text>
-        <Text >Other content</Text>
-      </SkeletonContent> */}
-
       <View
         style={{ flexDirection: "row", marginRight: 10, marginVertical: 10 }}
       >
-        <Text>
+        <Text>``
           Count books : {is_loading ? `...loading count` : all_books?.length}
         </Text>
         <OptionIcons

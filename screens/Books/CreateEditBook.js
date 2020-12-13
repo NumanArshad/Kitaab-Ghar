@@ -6,15 +6,17 @@ import InputField from "../../components/InputField";
 import Icons from "react-native-vector-icons/AntDesign";
 import * as ImagePicker from "expo-image-picker";
 
-const CreateEditBook = ({ navigation }) => {
+const CreateEditBook = ({ navigation, route }) => {
   const [formData, setFormData] = useState({
     bookName: "",
     author: "",
     edition: "",
     publisher: "",
-    imageUri: "",
+    imageUri: "img",
   });
   const { bookName, author, edition, publisher, imageUri } = formData;
+
+  //console.log("heheh", route.params?.single_book);
 
   const handleChange = (name, value) => {
     setFormData({
@@ -37,7 +39,24 @@ const CreateEditBook = ({ navigation }) => {
         // }
       }
     })();
-  }, []);
+    // console.log("inside");
+    if (route.params?.single_book) {
+      const {
+        bookName,
+        author,
+        publisher,
+        edition,
+        imageUri,
+      } = route.params?.single_book;
+      setFormData({
+        bookName,
+        author,
+        publisher,
+        imageUri,
+        edition,
+      });
+    }
+  }, [route.params?.single_book]);
 
   const handleImagePicker = async (_) => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -110,7 +129,8 @@ const CreateEditBook = ({ navigation }) => {
         <Button
           mode="contained"
           onPress={() =>
-            navigation.navigate("secondaryinfo", { basicInfo: formData })
+            navigation.navigate("secondaryinfo", { basicInfo: formData,
+            single_book: route.params?.single_book })
           }
         >
           Next
