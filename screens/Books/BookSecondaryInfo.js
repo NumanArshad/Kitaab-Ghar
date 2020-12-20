@@ -46,7 +46,7 @@ const BookSecondaryInfo = ({ navigation, route }) => {
     });
   };
 
-  //console.log("in secondary", route.params);
+  ////console.log("in secondary", route.params);
   useEffect(() => {
     if (route.params?.single_book) {
       const { stock, cost, sellingPrice, ISBN } = route.params?.single_book;
@@ -57,7 +57,7 @@ const BookSecondaryInfo = ({ navigation, route }) => {
 
   const handleReset = () => {
     // navigation.dispatch((state) => {
-    //   console.log("navigation history is", state);
+    //   //console.log("navigation history is", state);
     // });
   };
 
@@ -95,9 +95,6 @@ const BookSecondaryInfo = ({ navigation, route }) => {
       ...formData,
       createdByUserId: getCurrentUser()?.userId,
     };
-    console.log("basic", basicInfo);
-    console.log("formdata", formData);
-    console.log("data is", data);
 
     dispatch(
       route.params?.single_book

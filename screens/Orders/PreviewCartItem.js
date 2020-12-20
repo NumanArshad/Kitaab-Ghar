@@ -24,13 +24,11 @@ import { SliderBox } from "react-native-image-slider-box";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  clearSingleBook,
-  getSingleBook,
-  updateBook,
-} from "../../redux/books/books.actions";
+import { updateBook } from "../../redux/books/books.actions";
 import { useFocusEffect } from "@react-navigation/native";
 import { getCurrentUser } from "../../redux/auth/auth.actions";
+import handleAndroidToast from "../../utils/toastAndroid";
+import { addToCart } from "../../redux/orders/orders.actions";
 
 const PreviewCartItem = ({ navigation, route }) => {
   const {
@@ -39,22 +37,10 @@ const PreviewCartItem = ({ navigation, route }) => {
 
   const { userId } = getCurrentUser();
 
-  // const { single_book } = useSelector((state) => state.books);
-
   const dispatch = useDispatch();
 
-  const {
-    bookDetail: single_book,
-  } = route.params;
+  const { bookInfo: single_book } = route.params;
   const [wishList, setWishList] = useState(single_book?.wishListUsers || []);
-
-  useFocusEffect(
-    useCallback(() => {
-      return () => {
-        console.log("hy", single_book, wishList);
-      };
-    }, [dispatch])
-  );
 
   const isFavorite = () => {
     return wishList.some((user) => user === userId);
@@ -70,10 +56,13 @@ const PreviewCartItem = ({ navigation, route }) => {
       updateList = updateList.filter(
         (userId) => userId !== getCurrentUser()?.userId
       );
+      handleAndroidToast("Remove from favorite");
     } else {
       updateList = [...updateList, getCurrentUser()?.userId];
+
+      handleAndroidToast("Add to favorite");
     }
-    // console.log(updateList)
+    // //console.log(updateList)
     setWishList(updateList);
 
     dispatch(
@@ -89,11 +78,12 @@ const PreviewCartItem = ({ navigation, route }) => {
       navigation.navigate("sellbooks", {
         screen: "sellbooks",
         params: {
-          single_book: { ...single_book, wishListUsers: wishList }
+          single_book: { ...single_book, wishListUsers: wishList },
         },
       });
     } else {
-      navigation.navigate("MyCart");
+      dispatch(addToCart(single_book));
+      handleAndroidToast("Added to cart");
     }
   };
 

@@ -4,7 +4,7 @@ import rootReducer from "../redux/rootReducer";
 
 const middleware = [thunk];
 const custoMiddleWare = (store) => (next) => (action) => {
-  console.log(action.type, action.payload);
+  //console.log(action.type, action.payload);
   next(action);
 };
 

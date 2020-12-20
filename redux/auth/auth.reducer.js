@@ -24,7 +24,7 @@ export default function (state = initialState, actions) {
     //     auth_user: actions.payload,
     //   };
     case IS_SIGN_OUT:
-      console.log("should signout");
+      //console.log("should signout");
       return { is_auth: false, auth_role: null };
     default:
       return state;

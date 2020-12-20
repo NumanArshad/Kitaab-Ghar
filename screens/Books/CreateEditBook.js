@@ -16,7 +16,7 @@ const CreateEditBook = ({ navigation, route }) => {
   });
   const { bookName, author, edition, publisher, imageUri } = formData;
 
-  //console.log("heheh", route.params?.single_book);
+  ////console.log("heheh", route.params?.single_book);
 
   const handleChange = (name, value) => {
     setFormData({
@@ -39,7 +39,7 @@ const CreateEditBook = ({ navigation, route }) => {
         // }
       }
     })();
-    // console.log("inside");
+    // //console.log("inside");
     if (route.params?.single_book) {
       const {
         bookName,

@@ -1,4 +1,4 @@
-import React, { useEffect, useState , useCallback} from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   View,
   FlatList,
@@ -22,7 +22,9 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { useDispatch, useSelector } from "react-redux";
 import { getAllBooks } from "../redux/books/books.actions";
 import { useFocusEffect } from "@react-navigation/native";
-import ContentLoader from "react-native-easy-content-loader"; 
+import ContentLoader from "react-native-easy-content-loader";
+import { addToCart, removeFromCart } from "../redux/orders/orders.actions";
+import handleAndroidToast from "../utils/toastAndroid";
 
 const LeftContent = (props) => <Avatar.Icon {...props} icon="folder" />;
 const DATA = [
@@ -84,17 +86,21 @@ export default function Dashboard({ navigation, route }) {
   const dispatch = useDispatch();
   const { all_books } = useSelector((state) => state.books);
   const { is_loading } = useSelector((state) => state.loading);
+  const { all_cart_items_list } = useSelector((state) => state.orders);
 
   useEffect(() => {
-    console.log("yes")
     dispatch(getAllBooks());
   }, [dispatch]);
 
-//   useFocusEffect(useCallback(()=>{
-// console.log("is focused")
+  const handleToggleCart = (bookObject) => {
+    const isExist = isExistInCart(bookObject.id);
+    dispatch(!isExist ? addToCart(bookObject) : removeFromCart(bookObject.id));
+    handleAndroidToast(`${!isExist ? `Added to` : "Remove from"} cart`);
+  };
 
-//   },[]))
-//  console.log("length is ",all_books?.length);
+  const isExistInCart = (bookId) => {
+    return all_cart_items_list.find(({ id }) => id === bookId);
+  };
 
   const [isGridView, triggerGridView] = useState(true);
   const renderItem = ({ item, index }) =>
@@ -108,7 +114,9 @@ export default function Dashboard({ navigation, route }) {
           style={{ height: 130 }}
         />
         <Card.Content>
-          <Title>{item.bookName} {index}</Title>
+          <Title>
+            {item.bookName} {index}
+          </Title>
           <Paragraph>Card content</Paragraph>
         </Card.Content>
         <Card.Actions>
@@ -125,7 +133,12 @@ export default function Dashboard({ navigation, route }) {
           padding: 5,
           marginRight: 10,
         }}
-        
+        onTouchStart={() =>
+          navigation.navigate("bookDetail", {
+            screen: "bookDetail",
+            params: { bookInfo: item },
+          })
+        }
       >
         <Image
           source={{ uri: item.imageUri }}
@@ -135,18 +148,17 @@ export default function Dashboard({ navigation, route }) {
           <View
             style={{ flexDirection: "row", justifyContent: "space-between" }}
           >
-            <Text>{item.bookName}  {item.edition} edition
+            <Text>
+              {item.bookName} {item.edition} edition
             </Text>
             <MaterialCommunityIcons
-              name="cart-plus"
-              onPress={() =>
-                navigation.navigate("MyCart", { screen: "CartItem" ,params: {bookDetail: item} })
-              }
+              name={`cart-${isExistInCart(item.id) ? `minus` : `plus`}`}
+              onPress={() => handleToggleCart(item)}
               size={25}
             />
           </View>
-            <Text>{item.author}</Text>
-            <Text>{item.publisher}</Text>
+          <Text>{item.author}</Text>
+          <Text>{item.publisher}</Text>
           <View
             style={{ flexDirection: "row", justifyContent: "space-between" }}
           >
@@ -161,8 +173,8 @@ export default function Dashboard({ navigation, route }) {
       <View
         style={{ flexDirection: "row", marginRight: 10, marginVertical: 10 }}
       >
-        <Text>``
-          Count books : {is_loading ? `...loading count` : all_books?.length}
+        <Text>
+          `` Count books : {is_loading ? `...loading count` : all_books?.length}
         </Text>
         <OptionIcons
           name="ios-options"

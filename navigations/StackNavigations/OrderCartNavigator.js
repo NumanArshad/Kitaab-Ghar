@@ -7,14 +7,15 @@ import {
 
 import { Button, useTheme } from "react-native-paper";
 import Icons from "react-native-vector-icons/FontAwesome";
-import WishList from "../../screens/WishList/WishList";
-const wishList = createStackNavigator();
+import BooksCart from "../../screens/Orders/BooksCart";
 
-const WishListNavigator = () => {
+const orderCart = createStackNavigator();
+
+const OrderCartNavigator = () => {
   const { colors } = useTheme();
 
   return (
-    <wishList.Navigator
+    <orderCart.Navigator
   //   initialRouteName="MyOrders"
       screenOptions={({ navigation }) => ({
         headerLeft: (props) => (
@@ -35,13 +36,13 @@ const WishListNavigator = () => {
         cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
       })}
     >
-      <wishList.Screen
-        component={WishList}
-        name="wish-lists"
-        options={{ headerTitle: "My WishList" }}
+      <orderCart.Screen
+        component={BooksCart}
+        name="MyCart"
+        options={{ headerTitle: "My orderCart" }}
       />
-    </wishList.Navigator>
+    </orderCart.Navigator>
   );
 };
 
-export default WishListNavigator;
+export default OrderCartNavigator;

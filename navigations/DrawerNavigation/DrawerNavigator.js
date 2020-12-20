@@ -13,8 +13,8 @@ import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import Octicons from "react-native-vector-icons/Octicons";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { useTheme } from "react-native-paper";
-import WishList from "../../screens/WishList";
 import WishListNavigator from "../StackNavigations/WishListNavigator";
+import OrderCartNavigator from "../StackNavigations/OrderCartNavigator";
 
 const drawer = createDrawerNavigator();
 
@@ -28,8 +28,6 @@ const DrawerNavigator = () => {
       openByDefault={false}
       drawerContentOptions={{
         activeTintColor: primary,
-        
-        // itemStyle: { marginVertical: 30 },
       }}
       
     >
@@ -50,7 +48,7 @@ const DrawerNavigator = () => {
         }}
       />
       <drawer.Screen
-        component={OrderBooksNavigator}
+        component={OrderCartNavigator}
         name="MyCart"
         options={{
           drawerIcon: (props) => (
@@ -62,15 +60,9 @@ const DrawerNavigator = () => {
       <drawer.Screen
         component={OrderBooksNavigator}
         name="MyOrders"
-        onItemPress={({route, focused}) => {
-          if (focused) {
-          alert("is focused")
-          } else {
-            alert("not")
-          }
-        }}
         options={{
           drawerIcon: (props) => <Octicons name="checklist" {...props} />,
+           title: "MyOrders"
         }}
       />
     </drawer.Navigator>

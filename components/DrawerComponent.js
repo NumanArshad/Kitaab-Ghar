@@ -26,19 +26,7 @@ const CustomDrawerContent = (props) => {
 
   const { email } = getCurrentUser();
 
-  const {auth_role} = useSelector(state => state.auth)
-
-  useEffect(() => {
-   
-  }, []);
-
-  useLayoutEffect(() => {
-    if (props.state.index === 3) {
-      props.navigation.navigate("MyOrders", {
-        screen: "MyOrders",
-      });
-    }
-  }, [props.state.index]);
+  const { auth_role } = useSelector((state) => state.auth);
 
   const dispatch = useDispatch();
 
@@ -110,7 +98,9 @@ const CustomDrawerContent = (props) => {
             </View>
           </View>
           <View style={{ marginTop: 20 }}>
-            <Text style={{ color: "white" }}>Muhammad Numan Arshad {auth_role}</Text>
+            <Text style={{ color: "white" }}>
+              Muhammad Numan Arshad {auth_role}
+            </Text>
             <Text style={{ color: "white" }}>{email}</Text>
           </View>
         </ImageBackground>
@@ -118,17 +108,18 @@ const CustomDrawerContent = (props) => {
 
       <View style={{ flex: 0.75, marginTop: -30 }}>
         <DrawerContentScrollView>
-          <DrawerItemList {...props} 
-         onItemPress={({ route, focused }) => {
-          if (focused) {
-            alert("focues")
-           // navigation.closeDrawer();
-          } else {
-          //  const pushAction = StackActions.push(getRoute(...));
-          //  navigation.dispatch(pushAction);
-          }
-        }}
-         />
+          <DrawerItemList
+            {...props}
+            onItemPress={({ route, focused }) => {
+              if (focused) {
+                console.log("focues.......");
+                // navigation.closeDrawer();
+              } else {
+                //  const pushAction = StackActions.push(getRoute(...));
+                //  navigation.dispatch(pushAction);
+              }
+            }}
+          />
 
           <DrawerItem
             label="Sell Books"

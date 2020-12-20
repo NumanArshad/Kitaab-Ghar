@@ -17,7 +17,7 @@ const OrderBooksNavigator = () => {
 
   return (
     <order.Navigator
-  //   initialRouteName="MyOrders"
+      initialRouteName="MyOrders"
       screenOptions={({ navigation }) => ({
         headerLeft: (props) => (
           <Icons
@@ -37,16 +37,6 @@ const OrderBooksNavigator = () => {
         cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
       })}
     >
-      <order.Screen
-        component={BooksCart}
-        name="MyCart"
-        options={{ headerTitle: "Order Cart" }}
-      />
-      <order.Screen
-        component={PreviewCartItem}
-        name="CartItem"
-        options={{ headerShown:false }}
-      />
       <order.Screen component={Orders} name="MyOrders" />
     </order.Navigator>
   );

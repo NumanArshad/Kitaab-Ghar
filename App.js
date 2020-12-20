@@ -23,7 +23,7 @@ const theme = {
 const RootIndex = () => {
   const { is_auth } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
-  console.log("state", is_auth);
+  //console.log("state", is_auth);
 
   useEffect(() => {
     dispatch(authObserver());
