@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import {
   View,
   Text,
@@ -18,6 +18,14 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { useFocusEffect } from "@react-navigation/native";
 import handleAndroidToast from "../../utils/toastAndroid";
 import InputField from "../../components/InputField";
+import { useState } from "react/cjs/react.development";
+import isEmpty from "../../utils/isEmpty";
+import { placeOrder, updateCartList } from "../../redux/orders/orders.actions";
+import { getCurrentUser } from "../../redux/auth/auth.actions";
+import firebase from "../../utils/firebaseConfig/config";
+import dayjs from "dayjs";
+var localizedFormat = require("dayjs/plugin/localizedFormat");
+dayjs.extend(localizedFormat);
 
 const BooksCart = () => {
   const dispatch = useDispatch();
@@ -25,8 +33,28 @@ const BooksCart = () => {
     colors: { primary },
   } = useTheme();
   const { all_cart_items_list } = useSelector((state) => state.orders);
+  const { is_loading } = useSelector((state) => state.loading);
 
-  console.log(all_cart_items_list);
+  const handleItemQty = (index, qty) => {
+    const cartList = [...all_cart_items_list];
+    cartList[index].prQty = qty;
+    dispatch(updateCartList(cartList));
+  };
+
+  const handlePlaceOrder = () => {
+    const cartList = all_cart_items_list.map(({ id: bookId, prQty }) => {
+      return { bookId, prQty };
+    });
+
+    const data = {
+      orderBy: getCurrentUser()?.userId,
+      orderDate: dayjs().format("LLL"),
+      orderedBooks: cartList,
+    };
+
+    console.log("submit detail is ", data);
+    dispatch(placeOrder(data));
+  };
 
   const renderItem = ({ item, index }) => (
     <Surface
@@ -47,13 +75,13 @@ const BooksCart = () => {
           <Text>
             {item.bookName} {item.edition} edition
           </Text>
-
           <TextInput
             underlineColorAndroid={primary}
             keyboardType="number-pad"
+            onChangeText={(text) => handleItemQty(index, text)}
             style={{ width: 50, paddingBottom: 5 }}
-            maxLength={item.sellingPrice.toString().length}
-            value={"" || 1}
+            // maxLength={item.sellingPrice.toString().length}
+            value={item?.prQty}
           />
         </View>
 
@@ -72,10 +100,6 @@ const BooksCart = () => {
       <View style={{ height: "93.5%" }}>
         <FlatList data={all_cart_items_list} renderItem={renderItem} />
       </View>
-
-      <Button mode="contained" style={{ marginHorizontal: 4, marginBottom: 0 }}>
-        Place Order
-      </Button>
     </View>
   );
 };

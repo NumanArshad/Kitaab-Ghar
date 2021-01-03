@@ -53,7 +53,7 @@ export const signInUser = (email, password) => async (dispatch) => {
     dispatch(getSignInUserRole(uid, "showToast"));
   } catch (err) {
     error("SignIn error", err.message);
-    Promise.reject(err)
+    Promise.reject(err);
     dispatch(hideLoading());
   }
 };
@@ -61,10 +61,8 @@ export const signInUser = (email, password) => async (dispatch) => {
 export const authObserver = () => (dispatch) => {
   authRef.onAuthStateChanged((user) => {
     if (user) {
-     
       dispatch(getSignInUserRole(user.uid));
     } else {
-     
       dispatch({
         type: IS_SIGN_OUT,
       });
@@ -73,22 +71,36 @@ export const authObserver = () => (dispatch) => {
 };
 
 export const getCurrentUser = () => {
-  const {email, phoneNumber, photoURL, uid: userId} = authRef.currentUser;
- 
-  return {email, phoneNumber, photoURL, userId};
+  const { email, phoneNumber, photoURL, uid: userId } = authRef.currentUser || {};
+  return { email, phoneNumber, photoURL, userId };
 };
 
-export const logout = async() => {
+//////////////////Google signin///////////////////////////
+export const googleSignIn = () => {
+  var provider = new firebase.auth.GoogleAuthProvider();
+  // provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
+  authRef
+    // .signInWithPopup(provider)
+    .signInWithRedirect(provider)
+    .then((res) =>
+      console.log("google sign in response is ", res.credential, res.user)
+    )
+    .catch((err) => console.error("errr in google sign in is", err.message));
+};
+
+//////////////////Google signin///////////////////////////
+export const logout = async () => {
   // alert("called")
-  
-  authRef.signOut().then(
-    res=>{
+
+  authRef
+    .signOut()
+    .then((res) => {
       //console.log("logout")
       success("logout", "Logout successfully!");
-    }
-  ).catch ((err) => {
-    error("SignOut error", err);
-    return Promise.reject(err);
-  })
+    })
+    .catch((err) => {
+      error("SignOut error", err);
+      return Promise.reject(err);
+    });
   // authRef.signOut();
 };

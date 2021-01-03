@@ -6,9 +6,12 @@ import styles from "./styles";
 import InputField from "../../components/InputField";
 import firebase from "../../utils/firebaseConfig/config";
 import { ToastRendered, success, error } from "../../utils/ToastNotification";
-import { signInUser } from "../../redux/auth/auth.actions";
+import { googleSignIn, signInUser } from "../../redux/auth/auth.actions";
 import { useDispatch, useSelector } from "react-redux";
 import { isLoading } from "../../redux/loading/loading.actions";
+import * as GoogleSignIn from "expo-google-sign-in";
+import { useFocusEffect } from "@react-navigation/native";
+import { useCallback } from "react/cjs/react.development";
 
 export default function Login({ navigation }) {
   const dispatch = useDispatch();
@@ -19,7 +22,7 @@ export default function Login({ navigation }) {
         text: "Cancel",
         style: "cancel",
       },
-      { text: "YES", onPress: () => BackHandler.exitApp() },
+      { text: "Yes", onPress: () => BackHandler.exitApp() },
     ]);
     return true;
   };
@@ -40,13 +43,16 @@ export default function Login({ navigation }) {
     dispatch(signInUser(email, password, navigation));
   };
 
-  useEffect(() => {
-    const backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      backPressHandler
-    );
-    return () => backHandler.remove();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      const backHandler = BackHandler.addEventListener(
+        "hardwareBackPress",
+        backPressHandler
+      );
+
+      return () => backHandler.remove();
+    }, [])
+  );
 
   return (
     <View
@@ -112,6 +118,7 @@ export default function Login({ navigation }) {
             mode="contained"
             icon="google"
             style={{ backgroundColor: "#E57373" }}
+            onPress={() => googleSignIn()}
           >
             Google
           </Button>

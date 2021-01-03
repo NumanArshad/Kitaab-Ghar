@@ -31,5 +31,5 @@ export const getSignInUserRole = (userId, showToast) => (dispatch) => {
         dispatch(authenticatedAction(role));
         dispatch(hideLoading());
       });
-    });
+    }).catch(err => console.log("error in user role get is ", err.message));
 };

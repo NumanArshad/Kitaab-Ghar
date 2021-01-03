@@ -24,7 +24,7 @@ const CreateEditBook = ({ navigation, route }) => {
       [name]: value,
     });
   };
-
+  
   useEffect(() => {
     (async () => {
       if (Platform.OS !== "web") {

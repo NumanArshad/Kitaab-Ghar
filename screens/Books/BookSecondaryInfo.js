@@ -14,6 +14,10 @@ import { error, success, ToastRendered } from "../../utils/ToastNotification";
 import { isLoading } from "../../redux/loading/loading.actions";
 import { getCurrentUser } from "../../redux/auth/auth.actions";
 import { CommonActions } from "@react-navigation/native";
+import dayjs from "dayjs";
+var localizedFormat = require("dayjs/plugin/localizedFormat");
+dayjs.extend(localizedFormat);
+import { RadioButton } from 'react-native-paper';
 
 const BookSecondaryInfo = ({ navigation, route }) => {
   const rootStorageRef = firebase.storage().ref();
@@ -55,7 +59,7 @@ const BookSecondaryInfo = ({ navigation, route }) => {
     }
   }, [route.params?.single_book]);
 
-  const handleReset = () => {
+  const handleChecked = () => {
     // navigation.dispatch((state) => {
     //   //console.log("navigation history is", state);
     // });
@@ -94,6 +98,7 @@ const BookSecondaryInfo = ({ navigation, route }) => {
       ...basicInfo,
       ...formData,
       createdByUserId: getCurrentUser()?.userId,
+      createdDate: dayjs().format("LLL")
     };
 
     dispatch(
@@ -134,6 +139,19 @@ const BookSecondaryInfo = ({ navigation, route }) => {
         value={ISBN}
         onChangeText={(text) => handleChange("ISBN", text)}
       />
+
+<View>
+      <RadioButton
+        value="first"
+       // status={ checked === 'first' ? 'checked' : 'unchecked' }
+        onPress={() => setChecked('first')}
+      />
+      <RadioButton
+        value="second"
+       // status={ checked === 'second' ? 'checked' : 'unchecked' }
+        onPress={() => setChecked('second')}
+      />
+    </View>
       {/* <Button mode="contained" style={{ marginTop: 10 }} onPress={handleReset}>
         Reset
       </Button> */}

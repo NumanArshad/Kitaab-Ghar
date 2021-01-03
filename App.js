@@ -8,6 +8,8 @@ import { authObserver, getCurrentUser } from "./redux/auth/auth.actions";
 import AuthNavigator from "./navigations/StackNavigations/AuthNavigator";
 import { Provider, useDispatch, useSelector } from "react-redux";
 import store from "./store";
+import isEmpty from "./utils/isEmpty";
+import * as Permissions from 'expo-permissions';
 
 const theme = {
   ...DefaultTheme,
@@ -23,12 +25,19 @@ const theme = {
 const RootIndex = () => {
   const { is_auth } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
-  //console.log("state", is_auth);
+  console.log("state", is_auth, isEmpty(getCurrentUser()));
 
   useEffect(() => {
+
+
     dispatch(authObserver());
 
   }, [dispatch]);
+
+const permissons = () => {
+  
+}
+
 
   return (
     <NavigationContainer>

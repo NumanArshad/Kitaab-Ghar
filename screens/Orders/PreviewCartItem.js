@@ -10,6 +10,7 @@ import {
   ImageBackground,
   StatusBar,
   StyleSheet,
+  Alert,
 } from "react-native";
 import {
   Button,
@@ -22,13 +23,14 @@ import InputField from "../../components/InputField";
 import Icons from "react-native-vector-icons/AntDesign";
 import { SliderBox } from "react-native-image-slider-box";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import AntDesign from "react-native-vector-icons/AntDesign";
 import { LinearGradient } from "expo-linear-gradient";
 import { useDispatch, useSelector } from "react-redux";
-import { updateBook } from "../../redux/books/books.actions";
+import { removeBook, updateBook } from "../../redux/books/books.actions";
 import { useFocusEffect } from "@react-navigation/native";
 import { getCurrentUser } from "../../redux/auth/auth.actions";
 import handleAndroidToast from "../../utils/toastAndroid";
-import { addToCart } from "../../redux/orders/orders.actions";
+import { addToCart, removeFromCart } from "../../redux/orders/orders.actions";
 
 const PreviewCartItem = ({ navigation, route }) => {
   const {
@@ -40,7 +42,14 @@ const PreviewCartItem = ({ navigation, route }) => {
   const dispatch = useDispatch();
 
   const { bookInfo: single_book } = route.params;
+
+  const { all_cart_items_list } = useSelector((state) => state.orders);
+
   const [wishList, setWishList] = useState(single_book?.wishListUsers || []);
+
+  const isExistInCart = (bookId) => {
+    return all_cart_items_list.find(({ id }) => id === bookId);
+  };
 
   const isFavorite = () => {
     return wishList.some((user) => user === userId);
@@ -48,6 +57,19 @@ const PreviewCartItem = ({ navigation, route }) => {
 
   const isCreatedBy = () => {
     return single_book?.createdByUserId === userId;
+  };
+
+  const handleDeleteBook = () => {
+    Alert.alert("Remove Book", "Are you sure you want to delete book ?", [
+      {
+        text: "Cancel",
+        style: "cancel",
+      },
+      {
+        text: "Yes",
+        onPress: () => dispatch(removeBook(single_book?.id, navigation)),
+      },
+    ]);
   };
 
   const handleToggleWishList = () => {
@@ -82,8 +104,13 @@ const PreviewCartItem = ({ navigation, route }) => {
         },
       });
     } else {
-      dispatch(addToCart(single_book));
-      handleAndroidToast("Added to cart");
+      const isExist = isExistInCart(single_book.id);
+      dispatch(
+        !isExist
+          ? addToCart({ ...single_book, prQty: "1" })
+          : removeFromCart(single_book.id)
+      );
+      handleAndroidToast(`${!isExist ? `Added to` : "Remove from"} cart`);
     }
   };
 
@@ -151,11 +178,15 @@ const PreviewCartItem = ({ navigation, route }) => {
           <Text style={{ fontSize: 11.5 }}>Status: Available</Text>
         </View>
         <View style={styles.rowItem}>
-          <MaterialIcons
-            name={`${isFavorite() ? `favorite` : `favorite-border`}`}
-            size={20}
-            onPress={handleToggleWishList}
-          />
+          {isCreatedBy() ? (
+            <AntDesign name="delete" size={20} onLongPress={handleDeleteBook} />
+          ) : (
+            <MaterialIcons
+              name={`${isFavorite() ? `favorite` : `favorite-border`}`}
+              size={20}
+              onPress={handleToggleWishList}
+            />
+          )}
         </View>
       </View>
       <View style={{ padding: 10 }}>
@@ -193,7 +224,11 @@ const PreviewCartItem = ({ navigation, route }) => {
         }}
       >
         <Button mode="contained" onPress={handleSubmitPreview}>
-          {isCreatedBy() ? `Edit` : `Buy now`}
+          {isCreatedBy()
+            ? `Edit`
+            : isExistInCart(single_book?.id)
+            ? "Remove from Cart"
+            : "Add to Cart"}
         </Button>
       </Surface>
     </View>

@@ -16,6 +16,7 @@ import {
   Paragraph,
   Surface,
 } from "react-native-paper";
+import * as Permissions from "expo-permissions";
 import Icons from "react-native-vector-icons/SimpleLineIcons";
 import OptionIcons from "react-native-vector-icons/Ionicons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -24,7 +25,7 @@ import { getAllBooks } from "../redux/books/books.actions";
 import { useFocusEffect } from "@react-navigation/native";
 import ContentLoader from "react-native-easy-content-loader";
 import { addToCart, removeFromCart } from "../redux/orders/orders.actions";
-import handleAndroidToast from "../utils/toastAndroid";
+import Notification from "./notification";
 
 const LeftContent = (props) => <Avatar.Icon {...props} icon="folder" />;
 const DATA = [
@@ -84,25 +85,36 @@ const DATA = [
 
 export default function Dashboard({ navigation, route }) {
   const dispatch = useDispatch();
-  const { all_books } = useSelector((state) => state.books);
+  const { all_books, lastVisible, count } = useSelector((state) => state.books);
   const { is_loading } = useSelector((state) => state.loading);
   const { all_cart_items_list } = useSelector((state) => state.orders);
+
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     dispatch(getAllBooks());
+  //   }, [dispatch])
+  // );
 
   useEffect(() => {
     dispatch(getAllBooks());
   }, [dispatch]);
 
-  const handleToggleCart = (bookObject) => {
-    const isExist = isExistInCart(bookObject.id);
-    dispatch(!isExist ? addToCart(bookObject) : removeFromCart(bookObject.id));
-    handleAndroidToast(`${!isExist ? `Added to` : "Remove from"} cart`);
+  const handleToggleCart = (bookInfo) => {
+    navigation.navigate("bookDetail", {
+      screen: "bookDetail",
+      params: { bookInfo },
+    });
+  };
+
+  const handelLoadMore = () => {
+    count !== all_books?.length && dispatch(getAllBooks("concat", lastVisible));
   };
 
   const isExistInCart = (bookId) => {
     return all_cart_items_list.find(({ id }) => id === bookId);
   };
 
-  const [isGridView, triggerGridView] = useState(true);
+  const [isGridView, triggerGridView] = useState(false);
   const renderItem = ({ item, index }) =>
     isGridView ? (
       <Card
@@ -115,7 +127,7 @@ export default function Dashboard({ navigation, route }) {
         />
         <Card.Content>
           <Title>
-            {item.bookName} {index}
+            {item.bookName} {item.id}
           </Title>
           <Paragraph>Card content</Paragraph>
         </Card.Content>
@@ -133,12 +145,10 @@ export default function Dashboard({ navigation, route }) {
           padding: 5,
           marginRight: 10,
         }}
-        onTouchStart={() =>
-          navigation.navigate("bookDetail", {
-            screen: "bookDetail",
-            params: { bookInfo: item },
-          })
-        }
+        key={item.id}
+        // onTouchStart={(event) => {
+        //   event.stopPropagation();
+        // }}
       >
         <Image
           source={{ uri: item.imageUri }}
@@ -170,6 +180,8 @@ export default function Dashboard({ navigation, route }) {
     );
   return (
     <View style={styles.dashboadContainer}>
+      {/* <Notification /> */}
+      <Button onPress={handlePermissons}>permissons</Button>
       <View
         style={{ flexDirection: "row", marginRight: 10, marginVertical: 10 }}
       >
@@ -195,7 +207,7 @@ export default function Dashboard({ navigation, route }) {
       </View>
       {isGridView ? (
         is_loading ? (
-          <Text>...loading</Text>
+          <Text>loading...</Text>
         ) : (
           <FlatList
             //horizontal={false}
@@ -223,12 +235,17 @@ export default function Dashboard({ navigation, route }) {
           // refreshing={false}
           renderItem={renderItem}
           keyExtractor={(item) => "#" + item.id}
-          refreshControl={
-            <RefreshControl
-              refreshing={is_loading}
-              onRefresh={() => dispatch(getAllBooks())}
-            />
-          }
+          // refreshControl={
+          //   <RefreshControl
+          //     refreshing={is_loading}
+          //     onRefresh={() => dispatch(getAllBooks())}
+          //   />
+          // }
+          onEndReachedThreshold={0.1} ////trigger target element number/ total element
+          //  onMomentumScrollBegin={()=>console.log("scroll begin")}
+          onEndReached={handelLoadMore}
+          //  onMomentumScrollEnd={()=>console.log("scroll end")}
+          scrollEnabled={!is_loading}
         />
       )}
     </View>
