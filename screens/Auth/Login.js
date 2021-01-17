@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { View, Text, Image, Alert, BackHandler } from "react-native";
 import { TextInput, Headline, Button, useTheme } from "react-native-paper";
 import app_icon from "../../assets/app_icon.png";
@@ -11,7 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { isLoading } from "../../redux/loading/loading.actions";
 import * as GoogleSignIn from "expo-google-sign-in";
 import { useFocusEffect } from "@react-navigation/native";
-import { useCallback } from "react/cjs/react.development";
+
 
 export default function Login({ navigation }) {
   const dispatch = useDispatch();
@@ -64,7 +64,7 @@ export default function Login({ navigation }) {
       }}
     >
       <ToastRendered />
-      <Headline>Login auto is fixes sign</Headline>
+      <Headline>Login</Headline>
       <Image source={app_icon} style={{ width: 120, height: 120 }} />
       <View style={styles.inputContainer}>
         <InputField
