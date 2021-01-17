@@ -64,7 +64,7 @@ export default function Login({ navigation }) {
       }}
     >
       <ToastRendered />
-      <Headline>Login auto staging sign</Headline>
+      <Headline>Login auto sign</Headline>
       <Image source={app_icon} style={{ width: 120, height: 120 }} />
       <View style={styles.inputContainer}>
         <InputField
