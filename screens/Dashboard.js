@@ -181,7 +181,7 @@ export default function Dashboard({ navigation, route }) {
   return (
     <View style={styles.dashboadContainer}>
       {/* <Notification /> */}
-      <Button onPress={handlePermissons}>permissons</Button>
+      {/* <Button onPress={handlePermissons}>permissons</Button> */}
       <View
         style={{ flexDirection: "row", marginRight: 10, marginVertical: 10 }}
       >

@@ -15,6 +15,7 @@ const DashboardTabsNavigator = () => {
         inactiveTintColor: "black",
         indicatorStyle: { backgroundColor: colors.primary },
         labelStyle: { fontSize: 12 },
+        
       }}
     >
       <tab.Screen name="all" component={Dashboard} />
